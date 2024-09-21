@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Instagram Profile Viewer</title>
+    <title>Instagram Username Checker</title>
     <style>
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -11,6 +11,7 @@
             margin: 0;
             padding: 0;
             display: flex;
+            flex-direction: column;
             justify-content: center;
             align-items: center;
             height: 100vh;
@@ -23,6 +24,7 @@
             width: 350px;
             padding: 20px;
             text-align: center;
+            margin-top: 20px;
         }
 
         .profile-card img {
@@ -79,50 +81,93 @@
             from { transform: rotate(0deg); }
             to { transform: rotate(360deg); }
         }
+
+        .input-container {
+            text-align: center;
+        }
+
+        input[type="text"] {
+            padding: 10px;
+            width: 200px;
+            margin-bottom: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+        button {
+            padding: 10px 20px;
+            background-color: #3897f0;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #2172d7;
+        }
     </style>
 </head>
 <body>
 
+    <div class="input-container">
+        <h1>Check Instagram Username</h1>
+        <input type="text" id="username-input" placeholder="Enter Instagram username">
+        <br>
+        <button onclick="checkUsername()">Search</button>
+    </div>
+
     <div class="profile-card" id="profile-card">
-        <div id="loading" class="loading"></div>
+        <div id="loading" class="loading" style="display:none;"></div>
     </div>
 
     <script>
-        const xhr = new XMLHttpRequest();
-        const data = null;
-        const profileCard = document.getElementById('profile-card');
-        const loadingDiv = document.getElementById('loading');
-
-        xhr.withCredentials = true;
-
-        xhr.addEventListener('readystatechange', function () {
-            if (this.readyState === this.DONE) {
-                loadingDiv.style.display = 'none';  // Remove the loading spinner
-                const response = JSON.parse(this.responseText);
-
-                if (response.status === 'ok' && response.user) {
-                    const user = response.user;
-                    const profileHtml = `
-                        <img src="${user.hd_profile_pic_url_info.url}" alt="Profile Picture">
-                        <h2>${user.full_name || user.username}</h2>
-                        <p>@${user.username}</p>
-                        <p><strong>Followers:</strong> ${user.follower_count !== null ? user.follower_count : 'N/A'}</p>
-                        <p><strong>Following:</strong> ${user.following_count}</p>
-                        <p class="biography">${user.biography ? user.biography : 'No biography available.'}</p>
-                        <a href="https://www.instagram.com/${user.username}" target="_blank" class="btn">View on Instagram</a>
-                    `;
-                    profileCard.innerHTML = profileHtml;
-                } else {
-                    profileCard.innerHTML = '<p>Unable to fetch user information.</p>';
-                }
+        function checkUsername() {
+            const username = document.getElementById('username-input').value;
+            if (!username) {
+                alert("Please enter a username!");
+                return;
             }
-        });
 
-        xhr.open('GET', 'https://instagram-scraper-2022.p.rapidapi.com/ig/info_username/?user=marilyn_abg');
-        xhr.setRequestHeader('x-rapidapi-key', '71d89fa0d5msh5a0e6f812f3f282p10803fjsn17b98ef6b30f');
-        xhr.setRequestHeader('x-rapidapi-host', 'instagram-scraper-2022.p.rapidapi.com');
+            const xhr = new XMLHttpRequest();
+            const data = null;
+            const profileCard = document.getElementById('profile-card');
+            const loadingDiv = document.getElementById('loading');
 
-        xhr.send(data);
+            profileCard.innerHTML = '';  // Clear any previous content
+            loadingDiv.style.display = 'inline-block';  // Show the loading spinner
+
+            xhr.withCredentials = true;
+
+            xhr.addEventListener('readystatechange', function () {
+                if (this.readyState === this.DONE) {
+                    loadingDiv.style.display = 'none';  // Hide the loading spinner
+                    const response = JSON.parse(this.responseText);
+
+                    if (response.status === 'ok' && response.user) {
+                        const user = response.user;
+                        const profileHtml = `
+                            <img src="${user.hd_profile_pic_url_info.url}" alt="Profile Picture">
+                            <h2>${user.full_name || user.username}</h2>
+                            <p>@${user.username}</p>
+                            <p><strong>Followers:</strong> ${user.follower_count !== null ? user.follower_count : 'N/A'}</p>
+                            <p><strong>Following:</strong> ${user.following_count}</p>
+                            <p class="biography">${user.biography ? user.biography : 'No biography available.'}</p>
+                            <a href="https://www.instagram.com/${user.username}" target="_blank" class="btn">View on Instagram</a>
+                        `;
+                        profileCard.innerHTML = profileHtml;
+                    } else {
+                        profileCard.innerHTML = '<p>Username not found or does not exist.</p>';
+                    }
+                }
+            });
+
+            xhr.open('GET', `https://instagram-scraper-2022.p.rapidapi.com/ig/info_username/?user=${username}`);
+            xhr.setRequestHeader('x-rapidapi-key', '71d89fa0d5msh5a0e6f812f3f282p10803fjsn17b98ef6b30f');
+            xhr.setRequestHeader('x-rapidapi-host', 'instagram-scraper-2022.p.rapidapi.com');
+
+            xhr.send(data);
+        }
     </script>
 
 </body>
