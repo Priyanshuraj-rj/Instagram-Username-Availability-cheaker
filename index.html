@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Instagram Username Finder</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        .container {
+            background-color: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            width: 300px;
+        }
+
+        h1 {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .form-group {
+            display: flex;
+            justify-content: space-between;
+        }
+
+        input[type="text"] {
+            width: 70%;
+            padding: 8px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+        button {
+            padding: 8px;
+            border: none;
+            background-color: #007bff;
+            color: white;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+
+        #username-list {
+            list-style-type: none;
+            margin-top: 20px;
+        }
+
+        #username-list li {
+            padding: 5px 0;
+            font-size: 16px;
+            color: #333;
+        }
+
+        .availability-check {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 10px;
+        }
+
+        #availability-result {
+            margin-top: 10px;
+            font-size: 14px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Instagram Username Finder</h1>
+        <div class="form-group">
+            <input type="text" id="username-input" placeholder="Enter a base username">
+            <button onclick="generateUsernames()">Generate</button>
+        </div>
+        <ul id="username-list"></ul>
+
+        <div class="availability-check">
+            <input type="text" id="check-username" placeholder="Check username availability">
+            <button onclick="checkAvailability()">Check</button>
+        </div>
+        <div id="availability-result"></div>
+    </div>
+
+    <script>
+        // Function to generate usernames
+        function generateUsernames() {
+            const baseUsername = document.getElementById('username-input').value;
+            const usernameList = document.getElementById('username-list');
+            usernameList.innerHTML = ''; // Clear previous usernames
+
+            if (!baseUsername) {
+                alert("Please enter a base username.");
+                return;
+            }
+
+            // Generate usernames with suffixes
+            const suffixes = ['_dev', '_code', '_js', '_tech', '_bytes', '_logic', '_gram'];
+            suffixes.forEach(suffix => {
+                const newUsername = baseUsername + suffix;
+                const listItem = document.createElement('li');
+                listItem.textContent = newUsername;
+                usernameList.appendChild(listItem);
+            });
+        }
+
+        // Function to check availability (mock function, since Instagram doesn't provide an API for this)
+        function checkAvailability() {
+            const username = document.getElementById('check-username').value;
+            const resultDiv = document.getElementById('availability-result');
+
+            if (!username) {
+                resultDiv.textContent = "Please enter a username to check.";
+                return;
+            }
+
+            // Simulating availability check (this is a mock; replace with real API logic if available)
+            const isAvailable = Math.random() > 0.5; // Randomly determine availability for demo
+
+            if (isAvailable) {
+                resultDiv.textContent = `The username "${username}" is available! 🎉`;
+                resultDiv.style.color = "green";
+            } else {
+                resultDiv.textContent = `The username "${username}" is taken. 😢`;
+                resultDiv.style.color = "red";
+            }
+        }
+    </script>
+</body>
+</html>
